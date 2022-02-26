@@ -1,28 +1,30 @@
 #!/usr/bin/python3
 from flask import Flask, request, render_template, url_for
 from settings import PORT, DEBUG
-from socket_test import Serializers, Wsocket
+from main import Serializers, Render
 
 app = Flask(__name__)
 
+
+
 @app.route('/', methods=['GET'])
-def Trading(self):
+def index():
     if request.method == 'GET':
-
-        """ Websocket"""
-        ws = Wsocket()
-        on_open = ws.on_open()
-        on_send = ws.on_send()
-        data = ws.on_data()
-        on_date = ws.on_date()
-
-        """ Formatting"""
-        sls = Serializers()
-        bid, ask = sls.formatting(data=data)
-        date = sls.formatter_date(on_date)
-        spread = sls.calculate_spread(bid=bid, ask=ask)
-
-        return render_template('template.index.html', date=date)
+        
+        bid, ask, date = Render.test()
+        spread = bid - ask
+        spread = '{:4f}'.format(spread)
+        
+        if spread > '0':
+            action = 'Buy'
+            
+        elif spread < '0':
+            action = 'Sell'
+        
+        else:
+            action = 'Without change'
+        
+        return render_template('template.index.html', bid=bid, ask=ask, date=date, spread=spread, action=action)
 
     else:
         return render_template('template.400.html')

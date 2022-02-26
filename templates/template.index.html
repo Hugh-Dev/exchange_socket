@@ -50,7 +50,7 @@
     <hr class="col-6 col-md-6 mb-5">
 
     <div class="row g-5">
-      <div class="col-md-6">
+      <div class="col-md-10">
           <table class="table table-bordered">
               <thead>
               <tr class="table-active">
@@ -58,14 +58,36 @@
                   <th>Bid</th>
                   <th>Ask</th>
                   <th>Spread</th>
+                  <th>Action</th>
               </tr>
               </thead>
               <tbody>
                 <tr >
-                    <th>---</th>
-                    <th>---</th>
-                    <th>---</th>
-                    <th>---</th>
+                    <th>
+                        {% if date %}
+                            {{ date }}
+                        {% endif %}
+                    </th>
+                    <th>
+                        {% if bid %}
+                            {{ bid }}
+                        {% endif %}
+                    </th>
+                    <th>
+                        {% if ask %}
+                            {{ ask }}
+                        {% endif %}
+                    </th>
+                    <th>
+                        {% if spread %}
+                            {{ spread }}
+                        {% endif %}
+                    </th>
+                    <th>
+                        {% if action %}
+                            {{ action }}
+                        {% endif %}
+                    </th>
                 </tr>
               </tbody>
           </table>
