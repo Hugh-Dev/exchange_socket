@@ -10,7 +10,7 @@ class Wsocket:
         self.ws = websocket.WebSocket()
 
     def on_open(self):
-        self.ws.connect(SOCKET_HOST, timeout=1000, redirect_limit=2)
+        self.ws.connect(SOCKET_HOST)
 
     def on_send(self):
         self.ws.send(MSG)
