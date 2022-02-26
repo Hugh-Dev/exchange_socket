@@ -36,18 +36,24 @@ class Serializers:
         return self.date
 
 
-    def calculate_spread(self, bid, ask):
+    def calculate_spread(self, bid, ask, date):
         self.spread = bid - ask
-        spread = '{:4f}'.format(self.spread)
-        if self.spread > 0:
-            print('bid:{} - ask:{} - spread:{}'.format(bid, ask, spread))
-            print('Buy')
-        elif self.spread < 0:
-            print('bid:{} - ask:{} - spread:{}'.format(bid, ask, spread))
-            print('Sell')
+        self.spread = '{:4f}'.format(self.spread)
+        if self.spread > '0':
+            table = PrettyTable()
+            table.field_names = ["date", "Bid price", "Ask price", "Spread", 'Action']
+            table.add_row([date, bid, ask, self.spread, 'Buy'])
+            print(table)
+        elif self.spread < '0':
+            table = PrettyTable()
+            table.field_names = ["date", "Bid price", "Ask price", "Spread", 'Action']
+            table.add_row([date, bid, ask, self.spread, 'Sell'])
+            print(table)
         else:
-            print('bid:{} - ask:{} - spread:{}'.format(bid, ask, spread))
-            print('Without change')
+            table = PrettyTable()
+            table.field_names = ["date", "Bid price", "Ask price", "Spread", 'Action']
+            table.add_row([date, bid, ask, self.spread, 'Without change'])
+            print(table)
         return self.spread
 
 class Queue(Serializers):
@@ -98,7 +104,7 @@ if __name__ == "__main__":
     sls = Serializers()
     bid, ask = sls.formatting(data=data)
     date = sls.formatter_date(on_date)
-    spread = sls.calculate_spread(bid=bid, ask=ask)
+    spread = sls.calculate_spread(bid=bid, ask=ask, date=date)
 
     """Queue"""
     q = Queue()
@@ -107,10 +113,10 @@ if __name__ == "__main__":
 
     """Table"""
     table = PrettyTable()
-    table.field_names = ["last", "Bid price", "Ask price", "Spread"]
+    table.field_names = ["date", "last", "Bid price", "Ask price", "Spread"]
     #table.add_row([1, '{0:4f}'.format(bid), '{0:4f}'.format(ask), '{0:4f}'.format(spread)])
-    table.add_row([10, '{0:4f}'.format(count_bid), '{0:4f}'.format(count_ask), '{0:4f}'.format(mean)])
-    table
+    table.add_row([date, 10, '{0:4f}'.format(count_bid), '{0:4f}'.format(count_ask), '{0:4f}'.format(mean)])
+    print(table)
 
     """Render template"""
 
