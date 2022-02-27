@@ -62,34 +62,44 @@ class Serializers:
         return self.spread
 
 
-class Queue(Serializers):
+class Queue:
 
     def __init__(self):
         self.bid_long = []
         self.ask_long = []
+        self.date_long = []
 
-    def loop(self, data):
+    def loop(self, ws):
         while True:
+            open = ws.on_open()
+            send = ws.on_send()
+            data = ws.on_data()
+            date = ws.on_date()
+            date = Serializers.formatter_date(self, date=date)
             bid, ask = Serializers.formatting(self, data=data)
+
             self.bid_long.append(bid)
             self.ask_long.append(ask)
+            self.date_long.append(date)
+
             if len(self.bid_long) == 10 and len(self.ask_long) == 10:
                 break
+
         return self.bid_long, self.ask_long
 
     def calculate_long_spread(self):
         self.count_ask = 0
         self.count_bid = 0
-        for ask in ask_long:
+
+        for ask in self.ask_long:
             self.count_ask += ask
-        for bid in bid_long:
+
+        for bid in self.bid_long:
             self.count_bid += bid
+
         self.mean = self.count_ask - self.count_bid
+
         return self.mean, self.count_ask, self.count_bid
-
-
-
-
 
 
 if __name__ == "__main__":
@@ -110,26 +120,25 @@ if __name__ == "__main__":
 
         """Queue"""
         q = Queue()
-        bid_long, ask_long = q.loop(data)
+        bid_long, ask_long = q.loop(ws=ws)
         mean, count_ask, count_bid = q.calculate_long_spread()
 
         """Table"""
         table = PrettyTable()
-        table.field_names = ["date", "last", "Bid price", "Ask price", "Spread"]
+        table.field_names = ["Date", "last", "Bid price", "Ask price", "Spread"]
         table.add_row([date, 10, '{0:4f}'.format(count_bid), '{0:4f}'.format(count_ask), '{0:4f}'.format(mean)])
         print(table)
 
         """End"""
-        # ws.shutdown()
+        ws = websocket.WebSocket()
+        ws.shutdown()
         
     except ValueError:
         print("Oops!  Failed to open websocket...")
 
-    
-
 else:
+
     """Render template"""
-    print('test...')
     class Render():
 
         def __init__(self, bid, ask, date):
