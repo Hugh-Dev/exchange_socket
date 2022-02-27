@@ -1,3 +1,7 @@
+### **Render Template** 
+
+![index](/static/screenshot/index.png)
+
 ## How to run it local?
 1. Clone the repository:
 
